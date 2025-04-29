@@ -1,8 +1,0 @@
-self.conn = pymysql.connect(
-                host='192.168.50.96',   # 라즈베리파이 ip
-                port=3306,
-                user='youme',
-                password='2019134006',
-                db='YOUME',
-                charset='utf8mb4'
-            )
