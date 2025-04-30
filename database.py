@@ -1,12 +1,12 @@
 import pymysql
 import datetime
+from db_login import db_info
 
-## usage history가 추가될 때 그 이름의 팀원 테이블의 아이디가 되도록?? 뭔말알이지?
 
 class DB:
     def __init__(self):
         try:
-            #
+            self.conn = pymysql.connect(**db_info)
             print("db connection successed")
             self.cur = self.conn.cursor()
         except Exception as e:
