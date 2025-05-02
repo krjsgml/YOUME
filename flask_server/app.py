@@ -1,168 +1,111 @@
 from flask import Flask, request, jsonify
 import pymysql
+from flask_cors import CORS
 from db_config import db_info
-from datetime import datetime, timedelta
+
 
 app = Flask(__name__)
+CORS(app)
 
-# 기본 테스트 라우터
-@app.route('/')
-def home():
-    return "Flask 서버 작동 중!"
+# --------------------
+# ItemLocation API
+# --------------------
 
-
-# ----------------------------------------
-# 📦 ITEMLOCATION 관련 API
-# ----------------------------------------
-
-@app.route('/items', methods=['GET'])
-def get_items():
+@app.route('/api/item-locations', methods=['GET'])
+def get_item_locations():
     conn = pymysql.connect(**db_info)
-    try:
-        with conn.cursor() as cursor:
-            cursor.execute("SELECT * FROM ITEMLOCATION")
-            items = cursor.fetchall()
-        return jsonify(items)
-    finally:
-        conn.close()
+    with conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT * FROM ItemLocation")
+            locations = cur.fetchall()
+    return jsonify(locations)
 
-
-@app.route('/items', methods=['POST'])
-def add_item():
+@app.route('/api/item-locations', methods=['POST'])
+def add_item_location():
     data = request.get_json()
-    item = data.get('item')
-    location = data.get('location')
-    if not item or not location:
-        return jsonify({'status': 'fail', 'message': '필수 정보 누락'}), 400
+    item_name = data['item_name']
+    location = data['location']
     conn = pymysql.connect(**db_info)
-    try:
-        with conn.cursor() as cursor:
-            sql = "INSERT INTO ITEMLOCATION (item, location) VALUES (%s, %s)"
-            cursor.execute(sql, (item, location))
+    with conn:
+        with conn.cursor() as cur:
+            cur.execute("INSERT INTO ItemLocation (item_name, location) VALUES (%s, %s)", 
+                        (item_name, location))
             conn.commit()
-        return jsonify({'status': 'success'})
-    finally:
-        conn.close()
+    return jsonify({'message': 'Item location added successfully'})
 
-
-@app.route('/items/<string:item>', methods=['PUT'])
-def update_item(item):
-    data = request.get_json()
-    new_location = data.get('location')
-    if not new_location:
-        return jsonify({'status': 'fail', 'message': '위치 정보 누락'}), 400
+@app.route('/api/item-locations/<int:id>', methods=['DELETE'])
+def delete_item_location(id):
     conn = pymysql.connect(**db_info)
-    try:
-        with conn.cursor() as cursor:
-            sql = "UPDATE ITEMLOCATION SET location=%s WHERE item=%s"
-            cursor.execute(sql, (new_location, item))
+    with conn:
+        with conn.cursor() as cur:
+            cur.execute("DELETE FROM ItemLocation WHERE id = %s", (id,))
             conn.commit()
-        return jsonify({'status': 'success'})
-    finally:
-        conn.close()
+    return jsonify({'message': 'Item location deleted successfully'})
 
+# --------------------
+# TeamMember API
+# --------------------
 
-@app.route('/items/<string:item>', methods=['DELETE'])
-def delete_item(item):
-    conn = pymysql.connect(**db_info)
-    try:
-        with conn.cursor() as cursor:
-            sql = "DELETE FROM ITEMLOCATION WHERE item=%s"
-            cursor.execute(sql, (item,))
-            conn.commit()
-        return jsonify({'status': 'success'})
-    finally:
-        conn.close()
-
-
-# ----------------------------------------
-# 👤 TeamMember 관련 API
-# ----------------------------------------
-
-@app.route('/members', methods=['GET'])
+@app.route('/api/members', methods=['GET'])
 def get_members():
     conn = pymysql.connect(**db_info)
-    try:
-        with conn.cursor() as cursor:
-            cursor.execute("SELECT * FROM TeamMember")
-            members = cursor.fetchall()
-        return jsonify(members)
-    finally:
-        conn.close()
+    with conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT * FROM TeamMember")
+            members = cur.fetchall()
+    return jsonify(members)
 
-
-@app.route('/members', methods=['POST'])
+@app.route('/api/members', methods=['POST'])
 def add_member():
     data = request.get_json()
-    name = data.get('name')
-    phone = data.get('phone_number')
-    position = data.get('position')
-    if not name or not phone or not position:
-        return jsonify({'status': 'fail', 'message': '정보 누락'}), 400
+    name = data['name']
+    phone = data.get('phone_number', '')
+    position = data.get('position', '')
     conn = pymysql.connect(**db_info)
-    try:
-        with conn.cursor() as cursor:
-            sql = "INSERT INTO TeamMember (name, phone_number, 직급) VALUES (%s, %s, %s)"
-            cursor.execute(sql, (name, phone, position))
+    with conn:
+        with conn.cursor() as cur:
+            cur.execute("INSERT INTO TeamMember (name, phone_number, position) VALUES (%s, %s, %s)", 
+                        (name, phone, position))
             conn.commit()
-        return jsonify({'status': 'success'})
-    finally:
-        conn.close()
+    return jsonify({'message': 'Member added successfully'})
 
-
-@app.route('/members/<int:id>', methods=['PUT'])
-def update_member(id):
-    data = request.get_json()
-    name = data.get('name')
-    phone = data.get('phone_number')
-    position = data.get('position')
-    if not name or not phone or not position:
-        return jsonify({'status': 'fail', 'message': '정보 누락'}), 400
-    conn = pymysql.connect(**db_info)
-    try:
-        with conn.cursor() as cursor:
-            sql = "UPDATE TeamMember SET name=%s, phone_number=%s, 직급=%s WHERE id=%s"
-            cursor.execute(sql, (name, phone, position, id))
-            conn.commit()
-        return jsonify({'status': 'success'})
-    finally:
-        conn.close()
-
-
-@app.route('/members/<int:id>', methods=['DELETE'])
+@app.route('/api/members/<int:id>', methods=['DELETE'])
 def delete_member(id):
     conn = pymysql.connect(**db_info)
-    try:
-        with conn.cursor() as cursor:
-            sql = "DELETE FROM TeamMember WHERE id=%s"
-            cursor.execute(sql, (id,))
+    with conn:
+        with conn.cursor() as cur:
+            cur.execute("DELETE FROM TeamMember WHERE id = %s", (id,))
             conn.commit()
-        return jsonify({'status': 'success'})
-    finally:
-        conn.close()
+    return jsonify({'message': 'Member deleted successfully'})
 
+# --------------------
+# UsageHistory API
+# --------------------
 
-# ----------------------------------------
-# 🕒 UsageHistory 최근 7일 조회 API
-# ----------------------------------------
+@app.route('/api/usage', methods=['GET'])
+def get_usage():
+    id = request.args.get('id')
+    date = request.args.get('date')
 
-@app.route('/usage/recent', methods=['GET'])
-def get_recent_usage():
+    query = "SELECT * FROM UsageHistory"
+    params = []
+
+    if id and date:
+        query += " WHERE id = %s AND usage_date = %s"
+        params = [id, date]
+    elif id:
+        query += " WHERE id = %s"
+        params = [id]
+    elif date:
+        query += " WHERE usage_date = %s"
+        params = [date]
+
     conn = pymysql.connect(**db_info)
-    try:
-        with conn.cursor() as cursor:
-            seven_days_ago = (datetime.now() - timedelta(days=7)).strftime('%Y-%m-%d')
-            sql = "SELECT * FROM UsageHistory WHERE usage_date >= %s ORDER BY usage_date DESC"
-            cursor.execute(sql, (seven_days_ago,))
-            result = cursor.fetchall()
-        return jsonify(result)
-    finally:
-        conn.close()
-
-
-# ----------------------------------------
-# 서버 실행
-# ----------------------------------------
+    with conn:
+        with conn.cursor() as cur:
+            cur.execute(query, params)
+            usage = cur.fetchall()
+    return jsonify(usage)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=True)
