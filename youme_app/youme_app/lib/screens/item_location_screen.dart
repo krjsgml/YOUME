@@ -13,7 +13,7 @@ class _ItemLocationScreenState extends State<ItemLocationScreen> {
   @override
   void initState() {
     super.initState();
-    futureItemLocations = ApiService().fetchItemLocation(); // API 호출
+    futureItemLocations = ApiService().fetchItemLocations(); // API 호출
   }
 
   @override

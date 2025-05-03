@@ -4,42 +4,37 @@ import '../models/item_location.dart';
 import '../models/team_member.dart';
 import '../models/usage_history.dart';
 
+final String baseUrl = 'http://192.168.50.96:5000/api';
+
 class ApiService {
-  final String baseUrl = 'http://your-api-endpoint'; // ← 여기 본인 API 주소로 수정하세요
-
-  // Item Location 가져오기
-  Future<List<ItemLocation>> fetchItemLocation() async {
-    final response = await http.get(Uri.parse('$baseUrl/item_location'));
-
+  Future<List<ItemLocation>> fetchItemLocations() async {
+    final response = await http.get(Uri.parse('$baseUrl/item_locations'));
     if (response.statusCode == 200) {
-      List<dynamic> data = json.decode(response.body);
-      return data.map((item) => ItemLocation.fromJson(item)).toList();
+      List jsonResponse = json.decode(response.body);
+      return jsonResponse.map((item) => ItemLocation.fromJson(item)).toList();
     } else {
-      throw Exception('Failed to load item locations');
+      throw Exception('Failed to load item locations. Status code: ${response.statusCode}');
     }
   }
 
-  // Team Member 가져오기
-  Future<List<TeamMember>> fetchTeamMember() async {
-    final response = await http.get(Uri.parse('$baseUrl/team_member'));
-
+  Future<List<TeamMember>> fetchTeamMembers() async {
+    final response = await http.get(Uri.parse('$baseUrl/team_members'));
     if (response.statusCode == 200) {
-      List<dynamic> data = json.decode(response.body);
-      return data.map((item) => TeamMember.fromJson(item)).toList();
+      List jsonResponse = json.decode(response.body);
+      return jsonResponse.map((item) => TeamMember.fromJson(item)).toList();
     } else {
-      throw Exception('Failed to load team members');
+      throw Exception('Failed to load team members. Status code: ${response.statusCode}');
     }
   }
 
-  // Usage History 가져오기
-  Future<List<UsageHistory>> fetchUsageHistory() async {
-    final response = await http.get(Uri.parse('$baseUrl/usage_history'));
+  Future<List<UsageHistory>> fetchUsageHistories() async {
+    final response = await http.get(Uri.parse('$baseUrl/usage_histories'));
 
     if (response.statusCode == 200) {
-      List<dynamic> data = json.decode(response.body);
-      return data.map((item) => UsageHistory.fromJson(item)).toList();
+      List jsonResponse = json.decode(response.body);
+      return jsonResponse.map((item) => UsageHistory.fromJson(item)).toList();
     } else {
-      throw Exception('Failed to load usage history');
+      throw Exception('Failed to load usage histories. Status code: ${response.statusCode}');
     }
   }
 }

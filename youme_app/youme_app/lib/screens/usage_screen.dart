@@ -14,7 +14,7 @@ class _UsageScreenState extends State<UsageScreen> {
   @override
   void initState() {
     super.initState();
-    usageHistory = ApiService().fetchUsageHistory();
+    usageHistory = ApiService().fetchUsageHistories();
   }
 
   @override
