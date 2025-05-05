@@ -1,3 +1,4 @@
 db_login.py
 __pycache__/
 flask_server/db_config.py
+youme_app/youme_app/lib/api/
