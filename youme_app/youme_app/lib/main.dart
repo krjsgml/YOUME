@@ -42,19 +42,19 @@ class HomeScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.pushNamed(context, '/members');
               },
-              child: Text('Manage Team Members'),
+              child: Text('멤버 관리'),
             ),
             ElevatedButton(
               onPressed: () {
                 Navigator.pushNamed(context, '/usage');
               },
-              child: Text('Usage History'),
+              child: Text('사용 기록 조회'),
             ),
             ElevatedButton(
               onPressed: () {
                 Navigator.pushNamed(context, '/item_location');
               },
-              child: Text('Item Location'),
+              child: Text('물품 관리'),
             ),
           ],
         ),

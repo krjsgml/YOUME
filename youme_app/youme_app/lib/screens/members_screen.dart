@@ -22,6 +22,7 @@ class _MembersScreenState extends State<MembersScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Team Members"),
+        automaticallyImplyLeading: true,
       ),
       body: FutureBuilder<List<TeamMember>>(
         future: members,
@@ -33,10 +34,36 @@ class _MembersScreenState extends State<MembersScreen> {
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return Center(child: Text("No members found"));
           } else {
-            return MemberList(members: snapshot.data!);
+            return MemberList(
+              members: snapshot.data!,
+              onDelete: _deleteMember,
+              onEdit: _editMember,
+              onAdd: _addMemberCallback,  // ✅ 추가된 부분
+            );
           }
         },
       ),
     );
+  }
+
+  void _addMemberCallback(String name, String phone, String position) async {
+    await ApiService().addTeamMember(name, phone, position);
+    setState(() {
+      members = ApiService().fetchTeamMembers();
+    });
+  }
+
+  void _deleteMember(int id) async {
+    await ApiService().deleteTeamMember(id);
+    setState(() {
+      members = ApiService().fetchTeamMembers();
+    });
+  }
+
+  void _editMember(int id, String name, String phone, String position) async {
+    await ApiService().updateTeamMember(id, name, phone, position);
+    setState(() {
+      members = ApiService().fetchTeamMembers();
+    });
   }
 }

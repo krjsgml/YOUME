@@ -33,7 +33,9 @@ class _UsageScreenState extends State<UsageScreen> {
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return Center(child: Text("No usage records found"));
           } else {
-            return UsageList(usageHistory: snapshot.data!);
+            // 데이터를 역순으로 표시하기 위해 reversed 사용
+            List<UsageHistory> reversedList = snapshot.data!.reversed.toList();
+            return UsageList(usageHistoryList: reversedList);
           }
         },
       ),

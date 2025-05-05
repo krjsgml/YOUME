@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 class UsageHistory {
   final int usageNum;
   final String name;
-  final int? robotId;
   final DateTime? startTime;
   final DateTime? stopTime;
   final DateTime? usageDate;
@@ -11,7 +10,6 @@ class UsageHistory {
   UsageHistory({
     required this.usageNum,
     required this.name,
-    this.robotId,
     this.startTime,
     this.stopTime,
     this.usageDate,
@@ -38,7 +36,6 @@ class UsageHistory {
     return UsageHistory(
       usageNum: json['usage_num'],
       name: json['name'],
-      robotId: json['robot_id'],
       startTime: parseDate(json['start_time'], startStopFormat),
       stopTime: parseDate(json['stop_time'], startStopFormat),
       usageDate: parseDate(json['usage_date'], usageDateFormat),

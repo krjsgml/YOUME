@@ -11,7 +11,7 @@ CORS(app)
 # ItemLocation API
 # --------------------
 
-@app.route('/api/item-locations', methods=['GET'])
+@app.route('/api/item_locations', methods=['GET'])
 def get_item_locations():
     conn = pymysql.connect(**db_info)
     with conn:
@@ -20,7 +20,7 @@ def get_item_locations():
             locations = cur.fetchall()
     return jsonify(locations)
 
-@app.route('/api/item-locations', methods=['POST'])
+@app.route('/api/item_locations', methods=['POST'])
 def add_item_location():
     data = request.get_json()
     item_name = data['item_name']
@@ -33,7 +33,7 @@ def add_item_location():
             conn.commit()
     return jsonify({'message': 'Item location added successfully'})
 
-@app.route('/api/item-locations/<int:id>', methods=['DELETE'])
+@app.route('/api/item_locations/<int:id>', methods=['DELETE'])
 def delete_item_location(id):
     conn = pymysql.connect(**db_info)
     with conn:
@@ -46,7 +46,7 @@ def delete_item_location(id):
 # TeamMember API
 # --------------------
 
-@app.route('/api/members', methods=['GET'])
+@app.route('/api/team_members', methods=['GET'])
 def get_members():
     conn = pymysql.connect(**db_info)
     with conn:
@@ -55,7 +55,7 @@ def get_members():
             members = cur.fetchall()
     return jsonify(members)
 
-@app.route('/api/members', methods=['POST'])
+@app.route('/api/team_members', methods=['POST'])
 def add_member():
     data = request.get_json()
     name = data['name']
@@ -82,7 +82,7 @@ def delete_member(id):
 # UsageHistory API
 # --------------------
 
-@app.route('/api/usage', methods=['GET'])
+@app.route('/api/usage_histories', methods=['GET'])
 def get_usage():
     id = request.args.get('id')
     date = request.args.get('date')
