@@ -20,7 +20,7 @@ class DB:
             result = self.cur.fetchall()
 
             if result:
-                locations = list(set(row[0] for row in result))  # 여러 개의 location이 있을 수 있음
+                locations = list(set(row[0] for row in result))
                 print(f"Item '{item}' found at locations: {locations}")
                 return locations
             else:
@@ -39,7 +39,7 @@ class DB:
                 result = self.cur.fetchall()
 
                 if result:
-                    return [row[0] for row in result]  # 중복되지 않은 location 리스트 반환
+                    return [row[0] for row in result]
                 else:
                     print(f"No locations found.")
                     return None
@@ -50,7 +50,7 @@ class DB:
                 result = self.cur.fetchall()
 
                 if result:
-                    items = [row[0] for row in result]  # 여러 개의 item이 있을 수 있음
+                    items = [row[0] for row in result]
                     print(f"Items found at location '{location}': {items}")
                     return items
                 else:
@@ -130,7 +130,7 @@ class DB:
                 return None
     
             # 해당 ID로 이름을 찾기
-            query = "SELECT name FROM TeamMember WHERE id = %s"  # ITEM_LOCATION이 아니라 TeamMember에서 검색해야 합니다.
+            query = "SELECT name FROM TeamMember WHERE id = %s"
             self.cur.execute(query, (id,))
             result = self.cur.fetchone()
     

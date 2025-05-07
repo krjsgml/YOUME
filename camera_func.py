@@ -86,7 +86,7 @@ class Tracking(QThread):
         bytes_per_line = ch * w
         qt_image = QImage(rgb_image.data, w, h, bytes_per_line, QImage.Format_RGB888)
         pixmap = QPixmap.fromImage(qt_image)
-        self.result_signal.emit(pixmap)  # 여기서 시그널로 메인 UI에 전달
+        self.result_signal.emit(pixmap)
 
 
     def set_roi(self, roi):
@@ -106,12 +106,10 @@ class Tracking(QThread):
 
         else:
             x, y = event.x(), event.y()
-            # 이미 트래킹 중이면 무시
             if self.tracking:
                 print("현재 추적 중")
                 return
-    
-            # 트래킹 가능한 얼굴 영역 리스트 가져오기
+
             detects = self.detects
     
             for (x1, y1, w, h) in detects:
@@ -163,7 +161,6 @@ class Falldetect(QThread):
             left_shoulder = landmarks[mp.solutions.pose.PoseLandmark.LEFT_SHOULDER]
             right_shoulder = landmarks[mp.solutions.pose.PoseLandmark.RIGHT_SHOULDER]
 
-            # 손이 어깨보다 위에 있는지 확인 (Y 좌표는 작을수록 위)
             if left_wrist.y < left_shoulder.y and right_wrist.y < right_shoulder.y:
                 print("양손을 들었습니다.")
                 self.emergency+=1

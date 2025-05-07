@@ -16,11 +16,11 @@ class Youme(QMainWindow):
         
         # Tracking 쓰레드
         self.tracking_thread = Tracking()
-        self.tracking_thread.result_signal.connect(self.update_cam_label)  # 시그널 연결
+        self.tracking_thread.result_signal.connect(self.update_cam_label)
 
         # bluetooth 쓰레드
         self.bluetooth_thread = Bluetooth()
-        self.bluetooth_thread.result_signal.connect(self.handle_bluetooth_message)  # 시그널 연결
+        self.bluetooth_thread.result_signal.connect(self.handle_bluetooth_message)
         self.bluetooth_thread.start()
 
         # DB 클래스
@@ -35,7 +35,7 @@ class Youme(QMainWindow):
     def InitUI(self):
         self.setWindowTitle("Youme Camera")
 
-        self.setFixedSize(800, 480)  # 예: 800x480 해상도
+        self.setFixedSize(800, 480)
 
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
@@ -87,7 +87,7 @@ class Youme(QMainWindow):
     def start_cam(self):
         # 카메라 시작
         self.tracking_thread.start()
-        self.tracking_thread.result_signal.connect(self.update_cam_label)  # 시그널 연결
+        self.tracking_thread.result_signal.connect(self.update_cam_label)
         
         self.start_btn.setEnabled(False)
         self.stop_btn.setEnabled(True)
@@ -113,7 +113,7 @@ class Youme(QMainWindow):
         # 검색창
         search_input = QLineEdit()
         search_input.installEventFilter(self)
-        self.search_input = search_input  # 참조 저장
+        self.search_input = search_input
         search_input.setPlaceholderText("품목을 입력하세요...")
         self.line_edits.append(search_input)
 
@@ -185,23 +185,19 @@ class Youme(QMainWindow):
         self.edit_dialog.setWindowTitle("Edit Dialog")
         self.edit_dialog.setFixedSize(800, 480)
 
-        # 전체 레이아웃
         main_layout = QVBoxLayout()
         self.edit_dialog.setLayout(main_layout)
 
-        # === 1. 버튼을 포함한 상단 고정 레이아웃 ===
         button_layout = QHBoxLayout()
         add_item_btn = QPushButton("ADD Item")
         remove_item_btn = QPushButton("REMOVE Item")
         button_layout.addWidget(add_item_btn)
         button_layout.addWidget(remove_item_btn)
 
-        # 버튼을 감싼 위젯 (고정)
         button_widget = QWidget()
         button_widget.setLayout(button_layout)
         main_layout.addWidget(button_widget)
 
-        # === 2. 아래에 동적으로 바뀌는 레이아웃을 위한 공간 ===
         scroll_area = QScrollArea()
         scroll_area.setWidgetResizable(True)
 
@@ -216,7 +212,6 @@ class Youme(QMainWindow):
         close_btn.clicked.connect(self.edit_dialog.close)
         main_layout.addWidget(close_btn)
 
-        # === 동적 위젯 클리어 함수 ===
         def clear_dynamic_layout():
             while self.dynamic_layout.count():
                 child = self.dynamic_layout.takeAt(0)
@@ -230,15 +225,14 @@ class Youme(QMainWindow):
             self.line_edits = []
 
             area_select = QComboBox()
-            # DB에서 location 값을 가져옴
-            locations = self.db.search_location('*')  # search_location 메서드에서 모든 location을 가져옴
-            area_select.addItems(['select location'] + locations)  # 기본값 'select location' 추가 후 locations 리스트 결합
+            locations = self.db.search_location('*')
+            area_select.addItems(['select location'] + locations)
             self.dynamic_layout.addWidget(area_select)
 
             # 검색창
             item_input = QLineEdit()
             item_input.installEventFilter(self)
-            self.item_input = item_input  # 참조 저장
+            self.item_input = item_input
             item_input.setPlaceholderText("추가할 품목명을 입력하세요")
             self.line_edits.append(item_input)
             self.dynamic_layout.addWidget(item_input)
@@ -262,7 +256,7 @@ class Youme(QMainWindow):
             # 검색창
             item_remove = QLineEdit()
             item_remove.installEventFilter(self)
-            self.item_remove = item_remove  # 참조 저장
+            self.item_remove = item_remove
             item_remove.setPlaceholderText("추가할 품목명을 입력하세요")
             self.line_edits.append(item_remove)
             self.dynamic_layout.addWidget(item_remove)
@@ -277,7 +271,6 @@ class Youme(QMainWindow):
 
             confirm_btn.clicked.connect(on_remove)
 
-        # === 버튼 연결 ===
         add_item_btn.clicked.connect(show_add_fields)
         remove_item_btn.clicked.connect(show_remove_message)
 

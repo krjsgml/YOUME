@@ -47,7 +47,7 @@ class Bluetooth(QThread):
         if self.ser.in_waiting:
             data = self.ser.readline().decode('utf-8').strip()
             self.result_signal.emit(data)
-            self.handle_received_message(data)  # 오버라이드용 메서드
+            self.handle_received_message(data)
 
     def send_message(self):
         """메시지 큐에서 메시지를 보내기"""
